@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Participantes</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --text: #6b6375;
+      --text-h: #08060d;
+      --bg: #fff;
+      --border: #e5e4e7;
+      --code-bg: #f4f3ec;
+      --accent: #aa3bff;
+      font: 18px/145% system-ui, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+    }
+
+    #root {
+      width: 1126px;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    h1, h2 {
+      color: var(--text-h);
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin: 20px 0;
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+
+    .Introducao {
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    .campo input {
+      padding: 10px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-h);
+      outline: none;
+    }
+
+    .campo input:focus {
+      border-color: var(--accent);
+    }
+
+    .botoes {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    button {
+      padding: 8px 18px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--code-bg);
+      color: var(--text-h);
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-excluir {
+      padding: 4px 10px;
+      font-size: 13px;
+      background: transparent;
+      color: #dc2626;
+      border: 1px solid var(--border);
+    }
+
+    .resultado {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .resultado ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .resultado li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 6px;
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .resultado li span {
+      color: var(--text-h);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      const [nome, setNome] = useState("");
+      const [participantes, setParticipantes] = useState([]);
+      const [erro, setErro] = useState("");
+
+      function adicionarParticipante(evento) {
+        evento.preventDefault();
+
+        if (nome.trim() === "") {
+          setErro("Preencha com um nome valido");
+          return;
+        }
+
+        setParticipantes([...participantes, nome.trim()]);
+        setNome("");
+        setErro("");
+      }
+
+      function removerParticipante(indexParaRemover) {
+        const novaLista = participantes.filter((_, index) => index !== indexParaRemover);
+        setParticipantes(novaLista);
+      }
+
+      function limpaForm() {
+        setNome("");
+        setParticipantes([]);
+        setErro("");
+      }
+
+      return (
+        <main>
+          <h1>Lista de Participantes</h1>
+          <p className='Introducao'>Registre os participantes da Mostra de Tecnologia</p>
+
+          <form onSubmit={adicionarParticipante}>
+            <div className='campo'>
+              <input
+                id='nome'
+                type="text"
+                value={nome}
+                onChange={(evento) => setNome(evento.target.value)}
+                placeholder='digite o nome do participante'
+              />
+              Digite o nome do participante
+            </div>
+            <div className='botoes'>
+              <button type='submit'>Adicionar</button>
+              <button type='button' onClick={limpaForm}>Limpar Lista</button>
+            </div>
+          </form>
+
+          {erro && <p style={{ color: 'red' }}>{erro}</p>}
+
+          <div className="resultado">
+            <h2>Total de participantes: {participantes.length}</h2>
+
+            {participantes.length === 0 ? (
+              <p>Nenhum participante cadastrado</p>
+            ) : (
+              <ul>
+                {participantes.map((participante, index) => (
+                  <li key={index}>
+                    <span>{participante}</span>
+                    <button
+                      type='button'
+                      className='btn-excluir'
+                      onClick={() => removerParticipante(index)}
+                    >
+                      Excluir
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </main>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
